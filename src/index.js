@@ -2,8 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+
+import { store, persistor } from "./redux/store";
+
 import "./assets/boxicons-2.0.7/css/boxicons.min.css";
 import "./assets/css/grid.css";
+import "./assets/css/theme.css";
 import "./assets/css/index.css";
 
 import Layout from "./components/Layout/Layout";
@@ -11,9 +17,11 @@ import Layout from "./components/Layout/Layout";
 document.title = "Dash";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Layout />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <PersistGate persistor={persistor}>
+      <Layout />
+    </PersistGate>
+  </Provider>,
   document.getElementById("root")
 );
 

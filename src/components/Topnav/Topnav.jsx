@@ -9,6 +9,7 @@ import Dropdown from "../Dropdown/Dropdown";
 import notifications from "../../assets/JsonData/notification.json";
 import user_image from "../../assets/images/oussama.jpg";
 import user_menu from "../../assets/JsonData/user_menus.json";
+import ThemeMenu from "../ThemeMenu/ThemeMenu";
 
 const curr_user = {
   display_name: "Oussama Aimarah",
@@ -64,7 +65,9 @@ const Topnav = () => {
             renderFooter={() => <Link to="/">View ALL</Link>}
           />
         </div>
-        <div className="topnav__right-item">{/* Themes */}</div>
+        <div className="topnav__right-item">
+          <ThemeMenu />
+        </div>
       </div>
     </div>
   );

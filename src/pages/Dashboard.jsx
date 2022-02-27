@@ -4,84 +4,19 @@ import { Link } from "react-router-dom";
 
 import Chart from "react-apexcharts";
 
+import { useSelector } from "react-redux";
+
 import statusCards from "../assets/JsonData/status-card-data.json";
 import StatusCard from "../components/StatusCard/StatusCard";
 import Table from "../components/Table/Table";
+import Badge from "../components/Badge/Badge";
 
-const chartOptions = {
-  series: [
-    {
-      name: "Online customers",
-      data: [40, 70, 20, 90, 36, 80, 30, 91, 60],
-    },
-    {
-      name: "Store customers",
-      data: [40, 30, 70, 80, 40, 16, 40, 20, 51],
-    },
-  ],
-  options: {
-    color: ["#6ab04c", "#2980b9"],
-    chart: {
-      background: "transparent",
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      curve: "smooth",
-    },
-    xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-      ],
-    },
-    legend: {
-      position: "top",
-    },
-    grid: {
-      show: false,
-    },
-  },
-};
-
-const topCustomers = {
-  head: ["user", "total orders", "total spending"],
-  body: [
-    {
-      username: "John Doe",
-      order: "490",
-      price: "$14,851",
-    },
-    {
-      username: "frank iva",
-      order: "250",
-      price: "$12,251",
-    },
-    {
-      username: "anthony baker",
-      order: "120",
-      price: "$10,840",
-    },
-    {
-      username: "frank iva",
-      order: "110",
-      price: "$9,251",
-    },
-    {
-      username: "Karl Marks",
-      order: "80",
-      price: "$8,555",
-    },
-  ],
-};
+import {
+  chartOptions,
+  topCustomers,
+  latestOrders,
+  orderStatus,
+} from "./Dashboard.utils";
 
 const renderCustomerHead = (item, index) => <th key={index}>{item}</th>;
 
@@ -92,7 +27,25 @@ const renderCustomerBody = (item, index) => (
     <td>{item.price}</td>
   </tr>
 );
+
+const renderOrderHead = (item, index) => <th key={index}>{item}</th>;
+
+const renderOrderBody = (item, index) => {
+  return (
+    <tr key={index}>
+      <td>{item.id}</td>
+      <td>{item.user}</td>
+      <td>{item.price}</td>
+      <td>{item.date}</td>
+      <td>
+        <Badge type={orderStatus[item.status]} content={item.status} />
+      </td>
+    </tr>
+  );
+};
+
 const Dashboard = () => {
+  const theme = useSelector((state) => state.theme.mode);
   return (
     <div>
       <h2 className="page-header">Dashboard</h2>
@@ -114,7 +67,17 @@ const Dashboard = () => {
           <div className="card full-height">
             {/* chart*/}
             <Chart
-              options={chartOptions.options}
+              options={
+                theme === "theme-mode-dark"
+                  ? {
+                      ...chartOptions.options,
+                      theme: { mode: "dark" },
+                    }
+                  : {
+                      ...chartOptions.options,
+                      theme: { mode: "light" },
+                    }
+              }
               series={chartOptions.series}
               type="line"
               height="100%"
@@ -133,6 +96,24 @@ const Dashboard = () => {
                 renderHead={(item, index) => renderCustomerHead(item, index)}
                 bodyData={topCustomers.body}
                 renderBody={(item, index) => renderCustomerBody(item, index)}
+              />
+            </div>
+            <div className="card__footer">
+              <Link to="/">View all</Link>
+            </div>
+          </div>
+        </div>
+        <div className="col-8">
+          <div className="card">
+            <div className="card__header">
+              <h3>Latest orders</h3>
+            </div>
+            <div className="card__body">
+              <Table
+                headData={latestOrders.head}
+                renderHead={(item, index) => renderOrderHead(item, index)}
+                bodyData={latestOrders.body}
+                renderBody={(item, index) => renderOrderBody(item, index)}
               />
             </div>
             <div className="card__footer">
